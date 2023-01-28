@@ -115,8 +115,8 @@ pip install ./dist/*.whl
 
 ### Install with `pip`
 
-> I haven't uploaded to pypi.org at this time, but I will upload it as a first pre-release soon.
+Currently I just published the pre-release version `v0.1.1a0`. So, maybe you need to install it with the `--pre` option. Example:
 
 ```
-pip install allin
+pip install --pre allin
 ```
