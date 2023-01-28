@@ -84,11 +84,13 @@ async def index():
 ```
 
 <details>
-    <summary>:point_down: Explanation</summary>
-    * The `app` variable is the ASGI application instance.
-    * And we create an endpoint with the route `/` on the line `app.route(...)`
-    * Then we add the `index()` function to handle the `/` route.
-    * And the handler function will return a JSON response with the content `{"message": "Hello World!"}`
+<summary>:point_down: Explanation</summary>
+
+* The `app` variable is the ASGI application instance.
+* And we create an endpoint with the route `/` on the line `app.route(...)`
+* Then we add the `index()` function to handle the `/` route.
+* And the handler function will return a JSON response with the content `{"message": "Hello World!"}`
+
 </details>
 
 That's it! looks familiar right?
