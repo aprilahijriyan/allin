@@ -95,7 +95,7 @@ async def index():
 
 That's it! looks familiar right?
 
-Want more? check out other [sample projects here](#)
+Want more? check out other [sample projects here](https://github.com/aprilahijriyan/allin/tree/main/examples)
 
 ## :sunglasses: Installation
 
