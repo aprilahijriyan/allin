@@ -1,8 +1,10 @@
 # Changelog
 
-<!--next-version-placeholder-->
+## v0.1.1a0 (2023-01-28)
 
-## v0.0.1-beta.2 (2023-01-28)
+This is the first implementation:
 
-
-## v0.0.1-beta.1 (2023-01-28)
+* ASGI Lifespan support
+* HTTP Specification (such as route mapping, error handling, request objects, responses, etc.)
+* Global Variables
+* Nesting routers
