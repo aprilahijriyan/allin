@@ -1,9 +1,22 @@
 [tool.poetry]
 name = "allin"
-version = "0.1.0"
+version = "0.1.1a0"
 description = "Allin is an experimental asynchronous web framework."
 authors = ["Aprila Hijriyan <hijriyan23@gmail.com>"]
 license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/aprilahijriyan/allin"
+repository = "https://github.com/aprilahijriyan/allin"
+keywords = ["asgi", "framework"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Web Environment",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Topic :: Software Development :: Libraries :: Application Frameworks"
+]
 
 [tool.poetry.dependencies]
 python = ">=3.8,<4.0"
