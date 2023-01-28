@@ -25,6 +25,10 @@ async def file_data():
     if "multipart/form-data" in request.headers.content_type:
         forms = await request.forms()
         files = forms.get("files", [])
+        # Check if the client, only uploads one file.
+        if not isinstance(files, list):
+            files = [files]
+        
         filenames = []
         for file in files:
             if isinstance(file, UploadFile):
