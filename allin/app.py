@@ -204,7 +204,7 @@ class Allin:
                     )
                     request = Request(stream, scope, headers=headers)
                     with request_context(request):
-                        response = await endpoint.func(**path_params)
+                        response = await endpoint(**path_params)
                         if isinstance(response, Response):
                             await response(send=send)
                         else:

@@ -1,12 +1,14 @@
 import asyncio
 from enum import IntEnum
 from functools import partialmethod
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union, get_args, get_origin, get_type_hints
 
 from autoroutes import Routes
 from typing_extensions import TypeAlias
 
-from .errors import EndpointError
+from .errors import EndpointError, HTTPError
+from .status import status_codes
+from .validators import Validator
 
 
 class MatchingCode(IntEnum):
@@ -20,6 +22,46 @@ MATCHED_ROUTE_TYPE: TypeAlias = tuple[
 ]
 
 
+class Converter:
+    def __init__(self, name: str, param_type: Any) -> None:
+        types = []
+        is_optional = False
+        if get_origin(param_type) is Union:
+            type_args = get_args(param_type)
+            if type(None) in type_args:
+                is_optional = True
+                types.append(type_args[0])
+            else:
+                types.extend(type_args)
+        else:
+            types.append(param_type)
+
+        self.name = name
+        self.param_type = param_type
+        self.is_optional = is_optional
+        self.validators = [Validator(arg_type) for arg_type in types]
+
+    def __call__(self, value: Any) -> Any:
+        if self.is_optional and value is None:
+            return value
+        elif not self.is_optional and value is None:
+            raise HTTPError(status_codes.NOT_FOUND)
+
+        max_length = len(self.validators)
+        rv = None
+        for idx, validator in enumerate(self.validators):
+            err, rv = validator.validate(value)
+            count = idx + 1
+            if count == max_length and err:
+                raise HTTPError(status_codes.BAD_REQUEST, rv, path=self.name)
+
+            if not err:
+                # Do not continue validation if the value is correct.
+                break
+
+        return rv
+
+
 class Endpoint:
     """
     A class for defining an endpoint.
@@ -29,6 +71,26 @@ class Endpoint:
         self.path = path
         self.func = func
         self.methods = methods
+        self.path_types = get_type_hints(func, include_extras=True)
+        self.converters: dict[str, Converter] = {}
+        for param, param_type in self.path_types.items():
+            converter = Converter(param, param_type)
+            self.converters[param] = converter
+
+    async def __call__(self, **path_params: Any) -> Any:
+        validated_params = {}
+        for param, value in path_params.items():
+            conv = self.converters.get(param)
+            if conv:
+                value = conv(value)
+            elif value is None:
+                # FIXME
+                # because when argument has no type hint it means client has to provide path parameter to be passed
+                # to endpoint function otherwise we will give 404 response.
+                raise HTTPError(status_codes.NOT_FOUND)
+            validated_params[param] = value
+
+        return await self.func(**validated_params)
 
 
 class Router:
@@ -140,6 +202,17 @@ class Router:
         if method is not None and method.upper() not in endpoint.methods:
             return (MatchingCode.UNSUPPORTED_METHODS, None, None)
 
+        # because we use the `autoroutes` module when we define a path like `/{id:digit}`
+        # and when a client visits the `/` page without supplying a path parameter
+        # the value of `id` param is an empty string.
+        # we should convert the empty string to None.
+        def _patch_path_values(item):
+            k, v = item
+            if v == "":
+                v = None
+            path_params[k] = v
+
+        list(map(_patch_path_values, path_params.items()))
         return (MatchingCode.FOUND, endpoint, path_params)
 
     def include_router(self, router: "Router"):
