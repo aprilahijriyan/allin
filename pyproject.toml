@@ -71,3 +71,6 @@ ignore = ["S101"]
 
 [tool.ruff.pydocstyle]
 convention = "google"
+
+[tool.isort]
+profile = "black"
