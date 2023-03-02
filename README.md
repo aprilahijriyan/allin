@@ -13,6 +13,8 @@ Allin is an experimental asynchronous web framework.
 Not sure when this framework can be used in production 😬
 </p>
 
+> You can help this project get better by creating an [issue](https://github.com/aprilahijriyan/allin/issues) or PR. Thank you for your time!
+
 Table of Contents:
 
 * [:raised_eyebrow: Why ?](#🤨-why)
