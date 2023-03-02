@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "allin"
-version = "0.1.1a0"
+version = "0.1.1a1"
 description = "Allin is an experimental asynchronous web framework."
 authors = ["Aprila Hijriyan <hijriyan23@gmail.com>"]
 license = "MIT"
